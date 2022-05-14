@@ -1,0 +1,516 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BF8859A3-12AF-4E0A-9A7C-114E3E9D7E43}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>ArtRaid</RootNamespace>
+    <AssemblyName>ArtRaid</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Il2CppDumper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\RaidExtractor\Il2CppDumper\Il2CppDumper\bin\Debug\netcoreapp3.1\Il2CppDumper.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Converters\ActConverter2.cs" />
+    <Compile Include="Converters\ActConverter.cs" />
+    <Compile Include="Converters\CompareToConverter.cs" />
+    <Compile Include="Converters\ToStarsConverter.cs" />
+    <Compile Include="Converters\PercentConverter.cs" />
+    <Compile Include="Converters\ArtToImageConverter.cs" />
+    <Compile Include="Converters\CompareToVisibilityConverter.cs" />
+    <Compile Include="Converters\EnumToDescriptionConverter.cs" />
+    <Compile Include="Converters\RarityToColorConverter.cs" />
+    <Compile Include="Data\Data.cs" />
+    <Compile Include="Dtos\WebArtDto.cs" />
+    <Compile Include="Extensions\EnumExtension.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
+    <Compile Include="ViewModels\ArtViewModel.cs" />
+    <Compile Include="WebServices\ArtWebService.cs" />
+    <Compile Include="WebServices\Models\WebResult.cs" />
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="ScrollThumbs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Affinity_Breaker_Shield.png" />
+    <Resource Include="Resources\Cursed_Shield.png" />
+    <Resource Include="Resources\Guardian_Shield.png" />
+    <Resource Include="Resources\Relentless_Shield.png" />
+    <Resource Include="Resources\ShieldAndSpeed_Shield.png" />
+    <Resource Include="Resources\Stalwart_Shield.png" />
+    <Resource Include="Resources\Berserker_Boots.png" />
+    <Resource Include="Resources\Critical_Rate_Boots.png" />
+    <Resource Include="Resources\Curing_Boots.png" />
+    <Resource Include="Resources\Fatal_Boots.png" />
+    <Resource Include="Resources\Frost_Boots.png" />
+    <Resource Include="Resources\Fury_Boots.png" />
+    <Resource Include="Resources\Life_Boots.png" />
+    <Resource Include="Resources\Reflex_Boots.png" />
+    <Resource Include="Resources\Relentless_Boots.png" />
+    <Resource Include="Resources\Relentless_Helmet.png" />
+    <Resource Include="Resources\Resistance_Boots.png" />
+    <Resource Include="Resources\ShieldAndCriticalChance_Boots.png" />
+    <Resource Include="Resources\Life_Helmet.png" />
+    <Resource Include="Resources\Accuracy_Chest.png" />
+    <Resource Include="Resources\Accuracy_Weapon.png" />
+    <Resource Include="Resources\Avenging_Boots.png" />
+    <Resource Include="Resources\Avenging_Chest.png" />
+    <Resource Include="Resources\Avenging_Shield.png" />
+    <Resource Include="Resources\Barbarians_Banner.png" />
+    <Resource Include="Resources\Curing_Helmet.png" />
+    <Resource Include="Resources\Curing_Shield.png" />
+    <Resource Include="Resources\Cursed_Chest.png" />
+    <Resource Include="Resources\Cursed_Helmet.png" />
+    <Resource Include="Resources\Cursed_Weapon.png" />
+    <Resource Include="Resources\Daze_Gloves.png" />
+    <Resource Include="Resources\Demonspawn_Banner.png" />
+    <Resource Include="Resources\Fatal_Chest.png" />
+    <Resource Include="Resources\Fatal_Gloves.png" />
+    <Resource Include="Resources\Fatal_Helmet.png" />
+    <Resource Include="Resources\Fatal_Shield.png" />
+    <Resource Include="Resources\Fatal_Weapon.png" />
+    <Resource Include="Resources\Fury_Shield.png" />
+    <Resource Include="Resources\Healing_Chest.png" />
+    <Resource Include="Resources\Immortal_Gloves.png" />
+    <None Include="Resources\Heroes\image_000.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Resource Include="Resources\Reflex_Shield.png" />
+    <Resource Include="Resources\Resistance_Helmet.png" />
+    <Resource Include="Resources\SacredOrder_Banner.png" />
+    <Resource Include="Resources\Savage_Helmet.png" />
+    <Resource Include="Resources\Shadowkin_Banner.png" />
+    <Resource Include="Resources\Shadowkin_Pendant.png" />
+    <Resource Include="Resources\ShieldAndAttackPower_Boots.png" />
+    <Resource Include="Resources\ShieldAndAttackPower_Gloves.png" />
+    <Resource Include="Resources\ShieldAndAttackPower_Weapon.png" />
+    <Resource Include="Resources\ShieldAndCriticalChance_Weapon.png" />
+    <Resource Include="Resources\ShieldAndHp_Helmet.png" />
+    <Resource Include="Resources\ShieldAndHp_Weapon.png" />
+    <Resource Include="Resources\ShieldAndSpeed_Boots.png" />
+    <Resource Include="Resources\Skinwalkers_Banner.png" />
+    <Resource Include="Resources\Stalwart_Boots.png" />
+    <Resource Include="Resources\Stalwart_Gloves.png" />
+    <Resource Include="Resources\Taunting_Boots.png" />
+    <Resource Include="Resources\Taunting_Gloves.png" />
+    <Resource Include="Resources\Toxic_Helmet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Accuracy_Boots.png" />
+    <Resource Include="Resources\Accuracy_Gloves.png" />
+    <Resource Include="Resources\Accuracy_Helmet.png" />
+    <Resource Include="Resources\Accuracy_Shield.png" />
+    <Resource Include="Resources\Avenging_Gloves.png" />
+    <Resource Include="Resources\Avenging_Helmet.png" />
+    <Resource Include="Resources\Avenging_Weapon.png" />
+    <Resource Include="Resources\BannerLords.png" />
+    <Resource Include="Resources\BannerLords_Banner.png" />
+    <Resource Include="Resources\BannerLords_Pendant.png" />
+    <Resource Include="Resources\BannerLords_Ring.png" />
+    <Resource Include="Resources\Barbarians.png" />
+    <Resource Include="Resources\Barbarians_Pendant.png" />
+    <Resource Include="Resources\Barbarians_Ring.png" />
+    <Resource Include="Resources\Berserker_Chest.png" />
+    <Resource Include="Resources\Berserker_Gloves.png" />
+    <Resource Include="Resources\Berserker_Helmet.png" />
+    <Resource Include="Resources\Berserker_Shield.png" />
+    <Resource Include="Resources\Berserker_Weapon.png" />
+    <Resource Include="Resources\BlockReflectDebuffAndHpAndDef_Weapon.png" />
+    <Resource Include="Resources\Build_I.png" />
+    <Resource Include="Resources\Critical_Rate_Gloves.png" />
+    <Resource Include="Resources\Critical_Rate_Helmet.png" />
+    <Resource Include="Resources\Critical_Rate_Shield.png" />
+    <Resource Include="Resources\Critical_Rate_Weapon.png" />
+    <Resource Include="Resources\Curing_Chest.png" />
+    <Resource Include="Resources\Curing_Weapon.png" />
+    <Resource Include="Resources\Cursed_Boots.png" />
+    <Resource Include="Resources\DarkElves.png" />
+    <Resource Include="Resources\DarkElves_Banner.png" />
+    <Resource Include="Resources\DarkElves_Pendant.png" />
+    <Resource Include="Resources\DarkElves_Ring.png" />
+    <Resource Include="Resources\Daze_Boots.png" />
+    <Resource Include="Resources\Daze_Helmet.png" />
+    <Resource Include="Resources\Daze_Shield.png" />
+    <Resource Include="Resources\Defense_Boots.png" />
+    <Resource Include="Resources\Defense_Chest.png" />
+    <Resource Include="Resources\Defense_Gloves.png" />
+    <Resource Include="Resources\Defense_Helmet.png" />
+    <Resource Include="Resources\Defense_Shield.png" />
+    <Resource Include="Resources\Defense_Weapon.png" />
+    <Resource Include="Resources\Demonspawn_Pendant.png" />
+    <Resource Include="Resources\Demonspawn_Ring.png" />
+    <Resource Include="Resources\Destroy_Chest.png" />
+    <Resource Include="Resources\Destroy_Gloves.png" />
+    <Resource Include="Resources\Destroy_Helmet.png" />
+    <Resource Include="Resources\Destroy_Shield.png" />
+    <Resource Include="Resources\Destroy_Weapon.png" />
+    <Resource Include="Resources\Dwarves.png" />
+    <Resource Include="Resources\Dwarves_Banner.png" />
+    <Resource Include="Resources\Dwarves_Pendant.png" />
+    <Resource Include="Resources\Dwarves_Ring.png" />
+    <Resource Include="Resources\Epic.png" />
+    <Resource Include="Resources\force_icon.png" />
+    <Resource Include="Resources\Frenzy_Boots.png" />
+    <Resource Include="Resources\Frenzy_Chest.png" />
+    <Resource Include="Resources\Frenzy_Gloves.png" />
+    <Resource Include="Resources\Frenzy_Helmet.png" />
+    <Resource Include="Resources\Frenzy_Shield.png" />
+    <Resource Include="Resources\Frenzy_Weapon.png" />
+    <Resource Include="Resources\Frost_Chest.png" />
+    <Resource Include="Resources\Frost_Gloves.png" />
+    <Resource Include="Resources\Frost_Helmet.png" />
+    <Resource Include="Resources\Frost_Shield.png" />
+    <Resource Include="Resources\Frost_Weapon.png" />
+    <Resource Include="Resources\Fury_Gloves.png" />
+    <Resource Include="Resources\Fury_Helmet.png" />
+    <Resource Include="Resources\Fury_Weapon.png" />
+    <Resource Include="Resources\Healing_Boots.png" />
+    <Resource Include="Resources\Healing_Gloves.png" />
+    <Resource Include="Resources\Healing_Helmet.png" />
+    <Resource Include="Resources\Healing_Shield.png" />
+    <Resource Include="Resources\Healing_Weapon.png" />
+    <Resource Include="Resources\HighElves.png" />
+    <Resource Include="Resources\HighElves_Banner.png" />
+    <Resource Include="Resources\HighElves_Pendant.png" />
+    <Resource Include="Resources\HighElves_Ring.png" />
+    <Resource Include="Resources\Immortal_Boots.png" />
+    <Resource Include="Resources\Immortal_Chest.png" />
+    <Resource Include="Resources\Immortal_Helmet.png" />
+    <Resource Include="Resources\Immortal_Shield.png" />
+    <Resource Include="Resources\Immortal_Weapon.png" />
+    <Resource Include="Resources\Immunity_Boots.png" />
+    <Resource Include="Resources\Immunity_Chest.png" />
+    <Resource Include="Resources\Immunity_Gloves.png" />
+    <Resource Include="Resources\Immunity_Helmet.png" />
+    <Resource Include="Resources\Immunity_Shield.png" />
+    <Resource Include="Resources\Immunity_Weapon.png" />
+    <Resource Include="Resources\KnightsRevenant.png" />
+    <Resource Include="Resources\KnightsRevenant_Banner.png" />
+    <Resource Include="Resources\KnightsRevenant_Pendant.png" />
+    <Resource Include="Resources\KnightsRevenant_Ring.png" />
+    <Resource Include="Resources\Legendary.png" />
+    <Resource Include="Resources\Lifesteal_Boots.png" />
+    <Resource Include="Resources\Lifesteal_Chest.png" />
+    <Resource Include="Resources\Lifesteal_Gloves.png" />
+    <Resource Include="Resources\Lifesteal_Helmet.png" />
+    <Resource Include="Resources\Lifesteal_Shield.png" />
+    <Resource Include="Resources\Lifesteal_Weapon.png" />
+    <Resource Include="Resources\Life_Chest.png" />
+    <Resource Include="Resources\Life_Gloves.png" />
+    <Resource Include="Resources\Life_Shield.png" />
+    <Resource Include="Resources\Life_Weapon.png" />
+    <Resource Include="Resources\LizardMen.png" />
+    <Resource Include="Resources\LizardMen_Banner.png" />
+    <Resource Include="Resources\LizardMen_Pendant.png" />
+    <Resource Include="Resources\LizardMen_Ring.png" />
+    <Resource Include="Resources\magic_icon.png" />
+    <Resource Include="Resources\Offense_Boots.png" />
+    <Resource Include="Resources\Offense_Chest.png" />
+    <Resource Include="Resources\Offense_Gloves.png" />
+    <Resource Include="Resources\Offense_Helmet.png" />
+    <Resource Include="Resources\Offense_Shield.png" />
+    <Resource Include="Resources\Offense_Weapon.png" />
+    <Resource Include="Resources\OgrynTribes.png" />
+    <Resource Include="Resources\OgrynTribes_Banner.png" />
+    <Resource Include="Resources\OgrynTribes_Pendant.png" />
+    <Resource Include="Resources\OgrynTribes_Ring.png" />
+    <Resource Include="Resources\Orcs.png" />
+    <Resource Include="Resources\Orcs_Banner.png" />
+    <Resource Include="Resources\Orcs_Pendant.png" />
+    <Resource Include="Resources\Orcs_Ring.png" />
+    <Resource Include="Resources\Perception_Boots.png" />
+    <Resource Include="Resources\Perception_Chest.png" />
+    <Resource Include="Resources\Perception_Gloves.png" />
+    <Resource Include="Resources\Perception_Helmet.png" />
+    <Resource Include="Resources\Perception_Shield.png" />
+    <Resource Include="Resources\Perception_Weapon.png" />
+    <Resource Include="Resources\Rare.png" />
+    <Resource Include="Resources\Reflex_Chest.png" />
+    <Resource Include="Resources\Reflex_Gloves.png" />
+    <Resource Include="Resources\Reflex_Helmet.png" />
+    <Resource Include="Resources\Reflex_Weapon.png" />
+    <Resource Include="Resources\regular_star.png" />
+    <Resource Include="Resources\Relentless_Chest.png" />
+    <Resource Include="Resources\Resilience_Boots.png" />
+    <Resource Include="Resources\Resilience_Chest.png" />
+    <Resource Include="Resources\Resilience_Gloves.png" />
+    <Resource Include="Resources\Resilience_Helmet.png" />
+    <Resource Include="Resources\Resilience_Shield.png" />
+    <Resource Include="Resources\Resilience_Weapon.png" />
+    <Resource Include="Resources\Resistance_Gloves.png" />
+    <Resource Include="Resources\Resistance_Shield.png" />
+    <Resource Include="Resources\Resistance_Weapon.png" />
+    <Resource Include="Resources\Retaliation_Boots.png" />
+    <Resource Include="Resources\Retaliation_Chest.png" />
+    <Resource Include="Resources\Retaliation_Gloves.png" />
+    <Resource Include="Resources\Retaliation_Helmet.png" />
+    <Resource Include="Resources\Retaliation_Shield.png" />
+    <Resource Include="Resources\Retaliation_Weapon.png" />
+    <Resource Include="Resources\SacredOrder.png" />
+    <Resource Include="Resources\SacredOrder_Pendant.png" />
+    <Resource Include="Resources\SacredOrder_Ring.png" />
+    <Resource Include="Resources\Savage_Boots.png" />
+    <Resource Include="Resources\Savage_Gloves.png" />
+    <Resource Include="Resources\Savage_Shield.png" />
+    <Resource Include="Resources\Savage_Weapon.png" />
+    <Resource Include="Resources\shadowkin.png" />
+    <Resource Include="Resources\Shadowkin_Ring.png" />
+    <Resource Include="Resources\ShieldAndAttackPower_Chest.png" />
+    <Resource Include="Resources\ShieldAndAttackPower_Helmet.png" />
+    <Resource Include="Resources\ShieldAndAttackPower_Shield.png" />
+    <Resource Include="Resources\ShieldAndCriticalChance_Gloves.png" />
+    <Resource Include="Resources\ShieldAndCriticalChance_Helmet.png" />
+    <Resource Include="Resources\ShieldAndCriticalChance_Shield.png" />
+    <Resource Include="Resources\ShieldAndHp_Boots.png" />
+    <Resource Include="Resources\ShieldAndHp_Gloves.png" />
+    <Resource Include="Resources\ShieldAndHp_Shield.png" />
+    <Resource Include="Resources\ShieldAndSpeed_Chest.png" />
+    <Resource Include="Resources\ShieldAndSpeed_Gloves.png" />
+    <Resource Include="Resources\ShieldAndSpeed_Helmet.png" />
+    <Resource Include="Resources\ShieldAndSpeed_Weapon.png" />
+    <Resource Include="Resources\Shield_Boots.png" />
+    <Resource Include="Resources\Shield_Chest.png" />
+    <Resource Include="Resources\Shield_Gloves.png" />
+    <Resource Include="Resources\Shield_Helmet.png" />
+    <Resource Include="Resources\Shield_Shield.png" />
+    <Resource Include="Resources\Shield_Weapon.png" />
+    <Resource Include="Resources\Skinwalkers.png" />
+    <Resource Include="Resources\Skinwalkers_Pendant.png" />
+    <Resource Include="Resources\Skinwalkers_Ring.png" />
+    <Resource Include="Resources\Speed_Boots.png" />
+    <Resource Include="Resources\Speed_Chest.png" />
+    <Resource Include="Resources\Speed_Gloves.png" />
+    <Resource Include="Resources\Speed_Helmet.png" />
+    <Resource Include="Resources\Speed_Shield.png" />
+    <Resource Include="Resources\Speed_Weapon.png" />
+    <Resource Include="Resources\spirit_icon.png" />
+    <Resource Include="Resources\Stalwart_Chest.png" />
+    <Resource Include="Resources\Stalwart_Helmet.png" />
+    <Resource Include="Resources\Stalwart_Weapon.png" />
+    <Resource Include="Resources\Stun_Boots.png" />
+    <Resource Include="Resources\Stun_Chest.png" />
+    <Resource Include="Resources\Stun_Gloves.png" />
+    <Resource Include="Resources\Stun_Helmet.png" />
+    <Resource Include="Resources\Stun_Shield.png" />
+    <Resource Include="Resources\Stun_Weapon.png" />
+    <Resource Include="Resources\Taunting_Chest.png" />
+    <Resource Include="Resources\Taunting_Helmet.png" />
+    <Resource Include="Resources\Taunting_Shield.png" />
+    <Resource Include="Resources\Taunting_Weapon.png" />
+    <Resource Include="Resources\Toxic_Boots.png" />
+    <Resource Include="Resources\Toxic_Chest.png" />
+    <Resource Include="Resources\Toxic_Gloves.png" />
+    <Resource Include="Resources\Toxic_Shield.png" />
+    <Resource Include="Resources\Toxic_Weapon.png" />
+    <Resource Include="Resources\UndeadHordes.png" />
+    <Resource Include="Resources\UndeadHordes_Banner.png" />
+    <Resource Include="Resources\UndeadHordes_Pendant.png" />
+    <Resource Include="Resources\UndeadHordes_Ring.png" />
+    <Resource Include="Resources\UnkillableAndSpdAndCrDmg_Chest.png" />
+    <Resource Include="Resources\UnkillableAndSpdAndCrDmg_Gloves.png" />
+    <Resource Include="Resources\UnkillableAndSpdAndCrDmg_Helmet.png" />
+    <Resource Include="Resources\UnkillableAndSpdAndCrDmg_Shield.png" />
+    <Resource Include="Resources\UnkillableAndSpdAndCrDmg_Weapon.png" />
+    <Resource Include="Resources\vault.png" />
+    <Resource Include="Resources\void_icon.png" />
+    <Resource Include="Resources\Warrior_Boots.png" />
+    <Resource Include="Resources\Warrior_Gloves.png" />
+    <Resource Include="Resources\Warrior_Helmet.png" />
+    <Resource Include="Resources\Warrior_Shield.png" />
+    <Resource Include="Resources\Warrior_Weapon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RaidExtractor\RaidExtractor.Core\RaidExtractor.Core.csproj">
+      <Project>{9E8F3CB5-4075-4482-8AE3-A05AB9BCF8A4}</Project>
+      <Name>RaidExtractor.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Heroes\image_10211.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_10647.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_10852.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_11028.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_11715.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_11774.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_11892.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_13497.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_13529.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_13590.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_2234.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_3886.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_4988.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_5577.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_7609.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_7687.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_8997.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_9345.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_9706.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_9710.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Heroes\image_9861.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Daze_Weapon.png" />
+    <Resource Include="Resources\Relentless_Gloves.png" />
+    <Resource Include="Resources\Relentless_Weapon.png" />
+    <Resource Include="Resources\Savage_Chest.png" />
+    <Resource Include="Resources\Warrior_Chest.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\BlockReflectDebuffAndHpAndDef_Gloves.png" />
+    <Resource Include="Resources\Critical_Rate_Chest.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
