@@ -7,7 +7,7 @@
         xmlns:converters="clr-namespace:ArtRaid.Converters"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1620" Background="#034175">
+        Title="Artifacts" Height="800" Width="1620" Background="#034175">
     <Window.Resources>
         <converters:ArtToImageConverter x:Key="ArtToImageConverter"/>
         <converters:RarityToColorConverter x:Key="RarityToColorConverter"/>
@@ -23,10 +23,12 @@
         <system:Single x:Key="DoubleZero">0</system:Single>
         <DataTemplate x:Key="ArtResource">
             <Grid Margin="0,2">
-                <Border Width="96" Height="96" ToolTip="{Binding}"
+                <Border Width="72" Height="72" ToolTip="{Binding}"
                     BorderThickness="2" BorderBrush="{Binding rarity, Converter={StaticResource RarityToColorConverter}}">
                     <Image Source="{Binding Converter={StaticResource ArtToImageConverter}}"/>
                 </Border>
+                <TextBlock Background="Black" FontSize="20" Text="+" FontWeight="Bold" Visibility="{Binding isActivated, Converter={StaticResource CompareToVisibilityConverter}, ConverterParameter={StaticResource True}}"
+                    Margin="5,3" VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="Yellow"/>
                 <TextBlock Background="Black" FontSize="20" Text="{Binding rank, Converter={StaticResource ToStarsConverter}}" 
                     Margin="5,3" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="Yellow"/>
                 <TextBlock Background="Black" FontSize="20" Text="{Binding level, StringFormat=+{0}}"
@@ -54,14 +56,14 @@
             <ColumnDefinition Width="280"/>
         </Grid.ColumnDefinitions>
         <!-- Heroes -->
-        <ListView ItemsSource="{Binding Heroes}" Margin="5" MinHeight="64"
+        <ListView ItemsSource="{Binding Heroes}" Margin="5" MinHeight="64" Visibility="Collapsed"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                   HorizontalContentAlignment="Stretch" 
-                  Background="#003666" Grid.ColumnSpan="3"
+                  Background="#003666" Grid.ColumnSpan="2"
                   PreviewMouseDown="ListView_PreviewMouseDown">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Image Source="{Binding Icon}" Width="48" Margin="5"/>
+                    <Image Source="{Binding Icon}" Width="48"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.ItemsPanel>
@@ -70,8 +72,25 @@
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
         </ListView>
+        <!-- Filters -->
+        <Grid Grid.Row="1" Grid.Column="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <ToggleButton Height="32" Margin="5" Grid.Column="0" Grid.Row="0" IsChecked="{Binding Filter13}">+13</ToggleButton>
+            <ToggleButton Height="32" Margin="5" Grid.Column="1" Grid.Row="0" IsChecked="{Binding Filter14}">+14</ToggleButton>
+            <ToggleButton Height="32" Margin="5" Grid.Column="0" Grid.Row="1" IsChecked="{Binding Filter15}">+15</ToggleButton>
+            <ToggleButton Height="32" Margin="5" Grid.Column="1" Grid.Row="1" IsChecked="{Binding FilterEquipedMax15}">Equipped 15-</ToggleButton>
+            <!--<ToggleButton Height="32" Margin="5" Grid.Column="1" Grid.Row="1" IsChecked="{Binding FilterNoEquiped}">No Equipped</ToggleButton>-->
+        </Grid>
         <!-- Favorits -->
-        <ListView ItemsSource="{Binding Favorits}" Grid.ColumnSpan="3" Grid.Row="1" Margin="5" MinHeight="64" Name="FavoritesListView"
+        <ListView ItemsSource="{Binding Favorits}" Grid.ColumnSpan="3" Grid.Row="0" Margin="5" MinHeight="64" Name="FavoritesListView"
             ItemTemplate="{StaticResource ArtResource}" Background="#003666" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             SelectionChanged="Favorite_SelectionChanged">
             <ListView.ItemsPanel>
@@ -81,7 +100,7 @@
             </ListView.ItemsPanel>
         </ListView>
         <!-- Arts -->
-        <Border Padding="5" Margin="5" BorderThickness="1" BorderBrush="Gray" Grid.Column="1" Grid.Row="2">
+        <Border Padding="5" Margin="5" BorderThickness="1" BorderBrush="Gray" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
             <ScrollViewer>
                 <ItemsControl ItemsSource="{Binding Arts}" Name="root">
                     <ItemsControl.ItemTemplate>
@@ -137,7 +156,7 @@
                 <ItemsControl ItemsSource="{Binding secondaryBonuses}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" 
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"
                                 TextBlock.FontSize="18" TextBlock.Foreground="LightGray">
                                 <StackPanel Orientation="Horizontal" Width="100">
                                     <TextBlock Text="{Binding kind, Converter={StaticResource EnumToDescriptionConverter}}"/>
@@ -172,12 +191,39 @@
                 </ComboBox>
                 <Button Margin="5" Content="Clear" Click="Clear_Click" VerticalAlignment="Bottom" Padding="5"/>
             </StackPanel>
+            <TextBox Visibility="{Binding Hero, Converter={StaticResource InvertedCompareToVisibilityConverter}, ConverterParameter={x:Null}}"
+                     FontSize="14"
+                     Text="{Binding Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KeyUp="Comment_KeyUp"></TextBox>
+            <TextBox Visibility="{Binding Hero, Converter={StaticResource InvertedCompareToVisibilityConverter}, ConverterParameter={x:Null}}"
+                     HorizontalAlignment="Left" FontSize="14"
+                     Text="{Binding Order, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KeyUp="Rating_KeyUp" Width="50" Margin="0,5,0,0"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.RowSpan="10" Grid.ColumnSpan="10">
             <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" FontWeight="Bold" Margin="5"
                        Visibility="{Binding ErrorMessage, Converter={StaticResource InvertedCompareToVisibilityConverter}, ConverterParameter={x:Null}}"/>
         </StackPanel>
-        <Button Grid.Column="2" Grid.Row="1" Grid.RowSpan="10" Click="Refresh_Click" IsEnabled="{Binding Loading, Converter={StaticResource CompareConverter}, ConverterParameter={StaticResource False}}"
-                Padding="5" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="100">Refresh</Button>
+
+        <!-- Statistics / Refresh -->
+        <StackPanel Grid.Column="2" Grid.Row="1" Grid.RowSpan="10" VerticalAlignment="Bottom">
+            <TextBlock Foreground="White" Margin="3">
+                <Run Text="10: "/>
+                <Run Text="{Binding Total10, Mode=OneWay}"/>
+                <Run Text="{Binding Total10Percent, StringFormat={}{0}%, Mode=OneWay}"/>
+            </TextBlock>
+            <TextBlock Foreground="White" Margin="3">
+                <Run Text="11: "/>
+                <Run Text="{Binding Total11, Mode=OneWay}"/>
+                <Run Text="{Binding Total11Percent, StringFormat={}{0}%, Mode=OneWay}"/>
+            </TextBlock>
+            <TextBlock Foreground="White" Margin="3">
+                <Run Text="10/11: "/>
+                <Run Text="{Binding Total10_11, Mode=OneWay}"/>
+                <Run Text="{Binding Total10_11Percent, StringFormat={}{0}%, Mode=OneWay}"/>
+            </TextBlock>
+            <TextBlock Foreground="White" Margin="3" Text="{Binding Total, StringFormat=Tot: {0}}"></TextBlock>
+            <Button Click="Refresh_Click" IsEnabled="{Binding Loading, Converter={StaticResource CompareConverter}, ConverterParameter={StaticResource False}}"
+                Padding="5" Margin="5" HorizontalAlignment="Center"  Width="100">Refresh</Button>
+
+        </StackPanel>
     </Grid>
 </Window>

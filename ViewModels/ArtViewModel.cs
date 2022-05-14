@@ -34,6 +34,61 @@ namespace ArtRaid.ViewModels {
 
     public class RootViewModel : BaseViewModel {
 
+        private IEnumerable<ArtViewModel> excludeAccessorials => AllArts
+            .Where(e => e.kind == ArtKindEnum.Weapon || e.kind == ArtKindEnum.Helmet || e.kind == ArtKindEnum.Shield ||
+                        e.kind == ArtKindEnum.Gloves || e.kind == ArtKindEnum.Chest || e.kind == ArtKindEnum.Boots);
+
+        public int Total10 => AllArts.Any() ? (excludeAccessorials.Count(e => e.level == 10)) : 0;
+        public int Total10Percent => AllArts.Any() ? (100 * excludeAccessorials.Count(e => e.level == 10) / excludeAccessorials.Count(e => e.level >= 10)) : 0;
+        public int Total11 => AllArts.Any() ? (excludeAccessorials.Count(e => e.level == 11)) : 0;
+        public int Total11Percent => AllArts.Any() ? (100 * excludeAccessorials.Count(e => e.level == 11) / excludeAccessorials.Count(e => e.level >= 10)) : 0;
+        public int Total10_11 => AllArts.Any() ? (excludeAccessorials.Count(e => e.level == 10 || e.level == 11)) : 0;
+        public int Total10_11Percent => AllArts.Any() ? (100 * excludeAccessorials.Count(e => e.level == 10 || e.level == 11) / excludeAccessorials.Count(e => e.level >= 10)) : 0;
+        public int Total => excludeAccessorials.Count(e => e.level >= 10);
+
+        public bool Filter13 {
+            get => filter13; set {
+                filter13 = value;
+                OnPropertyChanged();
+                UpdateAtrs();
+            }
+        }
+        public bool Filter14 {
+            get => filter14; set {
+                filter14 = value;
+                OnPropertyChanged();
+                UpdateAtrs();
+            }
+        }
+        public bool Filter15 {
+            get => filter15; set {
+                filter15 = value;
+                OnPropertyChanged();
+                UpdateAtrs();
+            }
+        }
+        public bool FilterNoEquiped {
+            get => filterNoEquiped; set {
+                filterNoEquiped = value;
+                OnPropertyChanged();
+                UpdateAtrs();
+            }
+        }
+        public bool FilterEquiped {
+            get => filterEquiped; set {
+                filterEquiped = value;
+                OnPropertyChanged();
+                UpdateAtrs();
+            }
+        }
+        public bool FilterEquipedMax15 {
+            get => filterEquipedMax15; set {
+                filterEquipedMax15 = value;
+                OnPropertyChanged();
+                UpdateAtrs();
+            }
+        }
+
         public string ErrorMessage {
             get => errorMessage;
             set {
@@ -52,11 +107,65 @@ namespace ArtRaid.ViewModels {
         private ArtViewModel selection;
         private string errorMessage;
         private bool loading;
+        private bool filter13;
+        private bool filter14;
+        private bool filter15;
+        private bool filterNoEquiped;
+        private bool filterEquiped;
+        private bool filterEquipedMax15;
+
+        public void UpdateAtrs() {
+            var arts = new List<ArtWrapper>();
+            foreach (var art in AllArts
+                  //.Where(e => e.isActivated == false)
+                  .OrderBy(e => e.setKind).ThenBy(e => e.kind).ThenByDescending(e => e.rank).ThenByDescending(e => e.level)) {
+                var key = (art.setKind == ArtSetKindEnum.ChangeHitType || art.setKind == ArtSetKindEnum.ShieldAccessory ? ArtSetKindEnum.None : art.setKind).ToString() + "_" + art.requiredFraction.ToString();
+                ArtWrapper item = arts.FirstOrDefault(e => e.Key == key);
+                if (item == default) {
+                    item = new ArtWrapper(key);
+                    arts.Add(item);
+                }
+                if (filterNoEquiped && art.isActivated == true) {
+                    continue;
+                }
+                if (filterEquiped && art.isActivated == false) {
+                    continue;
+                }
+                if (filterEquipedMax15 && (art.isActivated == false || art.level == 16 || art.rank < ArtRankEnum.Five)) {
+                    continue;
+                }
+                if ((filter13 && art.level == 13) ||
+                    (filter14 && art.level == 14) ||
+                    (filter15 && art.level == 15) ||
+                    (!filter13 && !filter14 && !filter15)) {
+                    item.Value.Add(art);
+                }
+            }
+
+            foreach (var art in arts.ToList()) {
+                if (art.Value.Count == 0) {
+                    arts.Remove(art);
+                }
+            }
+
+            Arts.Clear();
+            foreach (ArtWrapper art in arts) {
+                Arts.Add(art);
+            }
+
+            this.OnPropertyChanged(nameof(Total10));
+            this.OnPropertyChanged(nameof(Total10Percent));
+            this.OnPropertyChanged(nameof(Total11));
+            this.OnPropertyChanged(nameof(Total11Percent));
+            this.OnPropertyChanged(nameof(Total10_11));
+            this.OnPropertyChanged(nameof(Total10_11Percent));
+            this.OnPropertyChanged(nameof(Total));
+        }
 
         public ObservableCollection<HeroViewModel> Heroes { get; set; } = new ObservableCollection<HeroViewModel>();
-
+        public List<ArtViewModel> AllArts { get; set; } = new List<ArtViewModel>();
         public ObservableCollection<ArtWrapper> Arts { get; set; } = new ObservableCollection<ArtWrapper>();
-        public List<ArtViewModel> Favorits => Arts.SelectMany(e => e.Value).Where(e => e.Hero != null).ToList();
+        public List<ArtViewModel> Favorits => AllArts.Where(e => e.Hero != null).OrderByDescending(e => e.Order).ThenByDescending(e => e.level).ToList();
 
         public void UpdateFavorits() {
             OnPropertyChanged(nameof(Favorits));
@@ -81,6 +190,7 @@ namespace ArtRaid.ViewModels {
 
     public class ArtViewModel : BaseViewModel {
         private HeroViewModel hero;
+        private bool visible = true;
 
         public int id { get; set; }
         public int level { get; set; }
@@ -91,8 +201,15 @@ namespace ArtRaid.ViewModels {
         public ArtSetKindEnum setKind { get; set; }
         public ArtFractionEnum requiredFraction { get; set; }
 
-        public bool Visible { get; set; } = true;
+        public short Order { get; set; }
+        public string Comment { get; set; }
 
+        public bool Visible {
+            get => visible; set {
+                visible = value;
+                OnPropertyChanged();
+            }
+        }
         public BonusViewModel primaryBonus { get; set; } = new BonusViewModel();
         public List<BonusViewModel> secondaryBonuses { get; set; } = new List<BonusViewModel>();
 
@@ -105,7 +222,7 @@ namespace ArtRaid.ViewModels {
         }
 
         public override string ToString() {
-            return $"Kind:{kind}\nSetKind:{setKind}\nFraction{requiredFraction}";
+            return $"Kind:{kind}\nSetKind:{setKind}\nFraction{requiredFraction}\n{id}";
         }
     }
 
@@ -152,6 +269,7 @@ namespace ArtRaid.ViewModels {
         LizardMen,
         OgrynTribes,
         BannerLords,
+        [Description("Shadowkin")]
         Samurai,
         Demonspawn,
     }
@@ -166,8 +284,8 @@ namespace ArtRaid.ViewModels {
         Boots,
         Ring,
         Amulet,
-        Banner,
         Cloak,
+        Banner,
     }
 
     public enum ArtRankEnum {

@@ -18,12 +18,30 @@ namespace ArtRaid.WebServices {
                 request.ContentType = "application/json";
                 using (var response = (HttpWebResponse)await request.GetResponseAsync()) {
                     using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8)) {
-                        var json = reader.ReadToEnd();
+                        var json = await reader.ReadToEndAsync();
                         return JsonConvert.DeserializeObject<WebResult<WebArtDto[]>>(json);
                     }
                 }
             } catch (Exception e) {
                 return new WebResult<WebArtDto[]>() { Message = e.Message };
+            }
+        }
+
+        public async Task<WebResult<WebArtDto>> UpdateArt(int userId, WebArtDto dto) {
+            try {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://tm.myautocall.net/Api/Home/UpdateArt?UserId={userId}");
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                using (var writer = new StreamWriter(await request.GetRequestStreamAsync())) {
+                    writer.Write(JsonConvert.SerializeObject(dto));
+                }
+                using (var response = (HttpWebResponse)await request.GetResponseAsync()) {
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8)) {
+                        return JsonConvert.DeserializeObject<WebResult<WebArtDto>>(reader.ReadToEnd());
+                    }
+                }
+            } catch (Exception e) {
+                return new WebResult<WebArtDto>() { Message = e.Message };
             }
         }
 

@@ -2,9 +2,11 @@
 using ArtRaid.Extensions;
 using ArtRaid.ViewModels;
 using ArtRaid.WebServices;
+using Newtonsoft.Json;
 using RaidExtractor.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -56,7 +58,7 @@ namespace ArtRaid {
 
         private async void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             var artViewModel = (ArtViewModel)((FrameworkElement)sender).DataContext;
-            if (ViewModel.Selection == null || ViewModel.SelectionChanging == true) return;
+            if (ViewModel.Selection == null || ViewModel.SelectionChanging == true || ViewModel.Loading == true) return;
             foreach (HeroViewModel item in e.RemovedItems) {
                 // Web
                 try {
@@ -64,7 +66,7 @@ namespace ArtRaid {
                     ViewModel.ErrorMessage = null;
                     var webResult = await WebService.DeleteArt(UserId, artViewModel.id);
                     if (webResult.Success) {
-
+                        ViewModel.UpdateFavorits();
                     } else {
                         ViewModel.ErrorMessage = webResult.Message;
                     }
@@ -81,10 +83,10 @@ namespace ArtRaid {
                     var webResult = await WebService.AddArt(UserId, new Dtos.WebArtDto() {
                         UserId = UserId,
                         ArtId = artViewModel.id,
-                        HeroId = (short)item.Id
+                        HeroId = (short)item.Id,
                     });
                     if (webResult.Success) {
-
+                        ViewModel.UpdateFavorits();
                     } else {
                         ViewModel.ErrorMessage = webResult.Message;
                     }
@@ -92,7 +94,6 @@ namespace ArtRaid {
                     ViewModel.Loading = false;
                 }
             }
-            ViewModel.UpdateFavorits();
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e) {
@@ -123,22 +124,12 @@ namespace ArtRaid {
             var json = File.ReadAllText(@"D:\Develop\ArtRaid\dump.json");
             var dump = Newtonsoft.Json.JsonConvert.DeserializeObject<RaidExtractor.Core.AccountDump>(json);
 #endif
-            var arts = dump.Artifacts.Select(e => ActConverter.Convert(e)).ToList();
-            foreach (var art in arts
-                    .Where(e => e.isActivated == false)
-                    .OrderBy(e => e.setKind).ThenBy(e => e.kind).ThenByDescending(e => e.rank).ThenByDescending(e => e.level)) {
-                var key = art.setKind.ToString() + "_" + art.requiredFraction.ToString();
-                var item = ViewModel.Arts.FirstOrDefault(e => e.Key == key);
-                if (item == default) {
-                    item = new ArtWrapper(key);
-                    ViewModel.Arts.Add(item);
-                }
-                item.Value.Add(art);
-            }
+            ViewModel.AllArts = dump.Artifacts.Select(e => ActConverter.Convert(e)).ToList();
+            ViewModel.UpdateAtrs();
 
             var rootPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var images = Directory.GetFiles(Path.Combine(rootPath, @"Resources\Heroes"));
-            var heroes = images.Select(e => new HeroViewModel() { Id = Int32.Parse(e.OnlyNumbers()), Icon = new BitmapImage(new Uri(e)) }).ToList();
+            var heroes = images.Select(e => new HeroViewModel() { Id = Int32.Parse(e.Split('\\').Last().OnlyNumbers()), Icon = new BitmapImage(new Uri(e)) }).ToList();
             foreach (var hero in heroes) {
                 ViewModel.Heroes.Add(hero);
             }
@@ -148,12 +139,12 @@ namespace ArtRaid {
                 ViewModel.ErrorMessage = null;
                 var webResult = await WebService.GetArts(UserId);
                 if (webResult.Success) {
-                    foreach (var keyValue in ViewModel.Arts) {
-                        foreach (var art in keyValue.Value) {
-                            foreach (var webArt in webResult.Data) {
-                                if (art.id == webArt.ArtId) {
-                                    art.Hero = ViewModel.Heroes.FirstOrDefault(e => e.Id == webArt.HeroId);
-                                }
+                    foreach (var art in ViewModel.AllArts) {
+                        foreach (var webArt in webResult.Data) {
+                            if (art.id == webArt.ArtId) {
+                                art.Hero = ViewModel.Heroes.FirstOrDefault(e => e.Id == webArt.HeroId);
+                                art.Comment = webArt.Comment;
+                                art.Order = webArt.Order;
                             }
                         }
                     }
@@ -173,6 +164,52 @@ namespace ArtRaid {
 
         private void Art_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             FavoritesListView.SelectedItem = null;
+        }
+
+        Task task;
+        private async void Comment_KeyUp(object sender, KeyEventArgs e) {
+            var selection = ViewModel.Selection;
+            if (selection == null) return;
+            #region [ single request + delay ]
+            var localTask = task = Task.Delay(1000);
+            await task;
+            if (localTask != task) {
+                return;
+            }
+            #endregion [ single request + delay ]
+
+            var result = await WebService.UpdateArt(UserId, new Dtos.WebArtDto() {
+                Id = selection.id,
+                UserId = UserId,
+                ArtId = selection.id,
+                HeroId = (short)selection.Hero.Id,
+                Level = (byte)selection.level,
+                Order = selection.Order,
+                Comment = selection.Comment,
+            });
+        }
+
+        private async void Rating_KeyUp(object sender, KeyEventArgs e) {
+            var selection = ViewModel.Selection;
+            if (selection == null) return;
+            #region [ single request + delay ]
+            var localTask = task = Task.Delay(1000);
+            await task;
+            if (localTask != task) {
+                return;
+            }
+            #endregion [ single request + delay ]
+
+            var result = await WebService.UpdateArt(UserId, new Dtos.WebArtDto() {
+                Id = selection.id,
+                UserId = UserId,
+                ArtId = selection.id,
+                HeroId = (short)selection.Hero.Id,
+                Level = (byte)selection.level,
+                Order = selection.Order,
+                Comment = selection.Comment,
+            });
+            ViewModel.UpdateFavorits();
         }
     }
 }
