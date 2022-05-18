@@ -46,6 +46,13 @@ namespace ArtRaid.ViewModels {
         public int Total10_11Percent => AllArts.Any() ? (100 * excludeAccessorials.Count(e => e.level == 10 || e.level == 11) / excludeAccessorials.Count(e => e.level >= 10)) : 0;
         public int Total => excludeAccessorials.Count(e => e.level >= 10);
 
+        public bool Filter10_12 {
+            get => filter10_12; set {
+                filter10_12 = value;
+                OnPropertyChanged();
+                UpdateAtrs();
+            }
+        }
         public bool Filter13 {
             get => filter13; set {
                 filter13 = value;
@@ -67,6 +74,13 @@ namespace ArtRaid.ViewModels {
                 UpdateAtrs();
             }
         }
+        public bool Filter16 {
+            get => filter16; set {
+                filter16 = value;
+                OnPropertyChanged();
+                UpdateAtrs();
+            }
+        }
         public bool FilterNoEquiped {
             get => filterNoEquiped; set {
                 filterNoEquiped = value;
@@ -77,13 +91,6 @@ namespace ArtRaid.ViewModels {
         public bool FilterEquiped {
             get => filterEquiped; set {
                 filterEquiped = value;
-                OnPropertyChanged();
-                UpdateAtrs();
-            }
-        }
-        public bool FilterEquipedMax15 {
-            get => filterEquipedMax15; set {
-                filterEquipedMax15 = value;
                 OnPropertyChanged();
                 UpdateAtrs();
             }
@@ -107,12 +114,13 @@ namespace ArtRaid.ViewModels {
         private ArtViewModel selection;
         private string errorMessage;
         private bool loading;
+        private bool filter10_12;
         private bool filter13;
         private bool filter14;
         private bool filter15;
+        private bool filter16;
         private bool filterNoEquiped;
         private bool filterEquiped;
-        private bool filterEquipedMax15;
 
         public void UpdateAtrs() {
             var arts = new List<ArtWrapper>();
@@ -131,13 +139,12 @@ namespace ArtRaid.ViewModels {
                 if (filterEquiped && art.isActivated == false) {
                     continue;
                 }
-                if (filterEquipedMax15 && (art.isActivated == false || art.level == 16 || art.rank < ArtRankEnum.Five)) {
-                    continue;
-                }
-                if ((filter13 && art.level == 13) ||
+                if ((filter10_12 && (art.level == 10 || art.level == 11 || art.level == 12)) ||
+                    (filter13 && art.level == 13) ||
                     (filter14 && art.level == 14) ||
                     (filter15 && art.level == 15) ||
-                    (!filter13 && !filter14 && !filter15)) {
+                    (filter16 && art.level == 16) ||
+                    (!filter10_12 && !filter13 && !filter14 && !filter15 && !filter16)) {
                     item.Value.Add(art);
                 }
             }
@@ -200,6 +207,8 @@ namespace ArtRaid.ViewModels {
         public ArtRarityEnum rarity { get; set; }
         public ArtSetKindEnum setKind { get; set; }
         public ArtFractionEnum requiredFraction { get; set; }
+
+        public float percentEnhancement => secondaryBonuses.Where(e=>e.maxEnhancement != 0).Select(e => e.percentEnhancement).DefaultIfEmpty(0).Average(e => e);
 
         public short Order { get; set; }
         public string Comment { get; set; }
